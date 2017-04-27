@@ -6,14 +6,13 @@ var Timer= React.createClass({
   getInitialState: function(){
     return {
       elapsed:0,
-      timerStatus:'paused'
+      timerStatus:'stopped'
     };
   },
-  startTimer:function(){
+  handleStart:function(){
     this.timer = setInterval(()=>{
-      var newElapsed= this.state.elapsed + 1;
       this.setState({
-        elapsed:newElapsed
+        elapsed:this.state.elapsed + 1
       });
     },1000);
   },
@@ -21,15 +20,15 @@ var Timer= React.createClass({
     if(this.state.timerStatus !== nextState.timerStatus){
       switch(nextState.timerStatus){
         case 'started':
-          this.startTimer();
+          this.handleStart();
           break;
         case 'stopped':
           this.setState({
-            elapsed:0,
-            timerStatus:'paused'
+            elapsed:0
           });
         case 'paused':
           clearInterval(this.timer);
+          this.timer = undefined;
           break;
         }
     }
@@ -48,8 +47,8 @@ var Timer= React.createClass({
     return (
       <div>
         <h1 className="page-title">Timer App</h1>
-      <Clock totalSeconds={elapsed}/>
-      <Controls countdownStatus={timerStatus} onStatusChange={this.handleStatusChange}/>
+        <Clock totalSeconds={elapsed}/>
+        <Controls countdownStatus={timerStatus} onStatusChange={this.handleStatusChange}/>
       </div>
     )
   }
